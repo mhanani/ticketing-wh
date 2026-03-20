@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Instrument+Sans:wght@400;500;600&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Instrument Sans', 'Segoe UI', sans-serif;
+  --font-serif: 'Fraunces', Georgia, serif;
+
+  --color-shell: #fdfcfb;
+  --color-surface: #fdfcfb;
+  --color-line: #e4ddd3;
+  --color-line-strong: #d3c7b8;
+  --color-ink: #221d1a;
+  --color-ink-soft: #6d6258;
+  --color-muted: #a59586;
+  --color-accent: #5736f3;
+  --color-accent-soft: #7f67f7;
+  --color-gold: #c58f2c;
+  --color-olive: #708567;
+  --color-stone: #75685b;
+}
+
+:root {
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--color-ink-soft);
+  background: var(--color-shell);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+#root {
+  isolation: isolate;
+}
