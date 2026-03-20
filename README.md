@@ -44,3 +44,4 @@ Added [`DEVELOPMENT.md`] to discuss broader context and how this could be manage
 - Both routes reuse the same shared mock ticketing data and core logic.
 - The drawer state is reflected in the URL through query params.
 - The interface is intentionally minimal and tuned to the provided references rather than built as a generic admin dashboard.
+- For this take-home, leverage custom components rather than a component library.

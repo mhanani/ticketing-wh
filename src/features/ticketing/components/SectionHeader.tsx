@@ -37,6 +37,7 @@ export function SectionHeader({
         <div />
         <div />
         <div />
+        <div />
         <div className="justify-self-end text-right">
           <span className="text-[11px] uppercase tracking-[0.24em] text-[var(--color-muted)]">
             Capacity
@@ -45,7 +46,6 @@ export function SectionHeader({
             {section.capacity}
           </span>
         </div>
-        <div />
       </button>
     </div>
   )

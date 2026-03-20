@@ -58,7 +58,7 @@ For client-side state, I would often use `zustand` because it stays lightweight 
 
 For validation, I would use `zod`. I value it for runtime schema validation, typed form handling, and stronger API boundary safety.
 
-For UI composition, I like `Tailwind CSS` because it is productive and easy to scale. If I needed a stronger component baseline, I would also consider `shadcn/ui` as a practical starting point that still allows enough room for custom design decisions.
+For UI composition, I like `Tailwind CSS` because it is productive and easy to scale. If I needed a stronger component baseline, I would use `shadcn/ui` as a practical starting point that still allows enough room for custom design decisions.
 
 For code quality, my default baseline is:
 
