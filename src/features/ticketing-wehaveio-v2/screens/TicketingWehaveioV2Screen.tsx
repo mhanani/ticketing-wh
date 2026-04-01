@@ -29,7 +29,6 @@ type SortOption = 'season' | 'upcoming'
 const columnOptions: Array<{ key: TicketingColumnKey; label: string; width: string }> = [
   { key: 'seasonTotal', label: 'Season total', width: 'minmax(110px,0.5fr)' },
   { key: 'progress', label: 'Progress', width: 'minmax(220px,0.9fr)' },
-  { key: 'season', label: 'Season', width: 'minmax(110px,0.45fr)' },
   { key: 'matchdays', label: 'Upcoming matchdays', width: 'minmax(420px,1.55fr)' },
 ]
 
@@ -159,28 +158,33 @@ export function TicketingWehaveioV2Screen() {
   return (
     <div
       style={wehaveV2Theme}
-      className="min-h-full bg-[var(--wehave-v2-bg)] text-[var(--wehave-v2-ink-soft)]"
+      className="min-h-full bg-[var(--wehave-v2-surface)] text-[var(--wehave-v2-ink-soft)]"
     >
       <div className="flex min-h-full w-full">
-        <main className="min-w-0 flex-1 px-3 py-3 sm:px-4 sm:py-4">
-          <section className="min-h-[calc(100vh-4.5rem)] overflow-hidden rounded-[12px] border border-[var(--wehave-v2-border)] bg-[var(--wehave-v2-surface)] shadow-[var(--wehave-v2-shadow)]">
-            <header className="border-b border-[var(--wehave-v2-border)] px-4 py-4 sm:px-5">
+        <main className="min-w-0 flex-1">
+          <section className="min-h-[calc(100vh-4.5rem)] overflow-hidden bg-[var(--wehave-v2-surface)]">
+            <header className="px-4 py-4 sm:px-5">
               <div className="flex flex-col gap-4">
-                <div className="flex flex-wrap items-center gap-2 text-[11px] font-medium text-[var(--wehave-v2-muted)]">
-                  <span className="rounded-md border border-[var(--wehave-v2-primary-border)] bg-[var(--wehave-v2-primary-soft)] px-2.5 py-1 text-[var(--wehave-v2-primary-text)]">
-                    {seasonLabel}
-                  </span>
-                </div>
-
-                <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-                  <p className="min-w-0 text-sm text-[var(--wehave-v2-ink-soft)]">
-                    Sponsor ticket allocations across upcoming matchdays.
-                  </p>
+                <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                  <div className="min-w-0 space-y-4">
+                    <h1 className="truncate text-3xl font-bold text-[#18181b] [font-family:var(--font-geist-sans)]">
+                      Tickets
+                    </h1>
+                    <div className="flex flex-wrap items-center gap-2 text-[11px] font-medium text-[var(--wehave-v2-muted)]">
+                      <span className="rounded-md border border-[var(--wehave-v2-primary-border)] bg-[var(--wehave-v2-primary-soft)] px-2.5 py-1 text-[var(--wehave-v2-primary-text)]">
+                        {seasonLabel}
+                      </span>
+                    </div>
+                    <p className="min-w-0 text-sm text-[var(--wehave-v2-ink-soft)]">
+                      Sponsor ticket allocations across upcoming matchdays.
+                    </p>
+                  </div>
 
                   <div className="flex flex-wrap items-center gap-2 xl:justify-end">
                     <ToolbarSelect
                       ariaLabel="Status"
                       label="Filter"
+                      labelClassName="leading-4"
                       icon={<Funnel className="h-4 w-4" strokeWidth={2} />}
                       isActive={status !== 'distributed'}
                       value={status}
@@ -206,7 +210,7 @@ export function TicketingWehaveioV2Screen() {
                         <span className="flex items-center justify-center">
                           <Columns3 className="h-4 w-4 shrink-0" strokeWidth={2} />
                         </span>
-                        <span className="whitespace-nowrap">Columns</span>
+                        <span className="whitespace-nowrap leading-4">Columns</span>
                       </button>
 
                       {isColumnsOpen ? (
@@ -242,6 +246,7 @@ export function TicketingWehaveioV2Screen() {
                     <ToolbarSelect
                       ariaLabel="Sort"
                       label="Sort"
+                      labelClassName="leading-4"
                       icon={
                         sortBy === 'season' ? (
                           <ArrowUpDown className="h-4 w-4" strokeWidth={2} />
@@ -271,7 +276,7 @@ export function TicketingWehaveioV2Screen() {
                           onBlur={closeSearch}
                           placeholder="Search Assets..."
                           style={{ font: 'inherit' }}
-                          className={`flex h-9 w-full rounded-[8.4px] border bg-[var(--wehave-v2-surface)] py-2 pr-3 pl-9 text-sm leading-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] outline-none transition-[color,box-shadow,border-color] placeholder:text-[var(--wehave-v2-muted)] focus-visible:ring-[3px] focus-visible:ring-[rgba(166,133,255,0.45)] ${
+                          className={`flex h-9 w-full rounded-[8.4px] border bg-[var(--wehave-v2-surface)] py-2 pr-3 pl-9 text-sm leading-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)] outline-none transition-[color,box-shadow,border-color] placeholder:text-[var(--wehave-v2-muted)] focus-visible:ring-[3px] focus-visible:ring-[rgba(166,133,255,0.45)] ${
                             searchTerm
                               ? 'border-[var(--wehave-v2-primary)] text-[var(--wehave-v2-primary)]'
                               : 'border-[var(--wehave-v2-border)] text-[var(--wehave-v2-ink)]'
@@ -288,7 +293,7 @@ export function TicketingWehaveioV2Screen() {
                         <span className="flex items-center justify-center">
                           <Search className="h-4 w-4 shrink-0" strokeWidth={2} />
                         </span>
-                        <span className="whitespace-nowrap">Search</span>
+                        <span className="whitespace-nowrap leading-4">Search</span>
                       </button>
                     )}
                   </div>
@@ -309,9 +314,6 @@ export function TicketingWehaveioV2Screen() {
                   ) : null}
                   {visibleColumns.includes('progress') ? (
                     <div className="text-center">Progress</div>
-                  ) : null}
-                  {visibleColumns.includes('season') ? (
-                    <div className="text-center">Season</div>
                   ) : null}
                   {visibleColumns.includes('matchdays') ? (
                     <div className="text-center">Upcoming matchdays</div>
@@ -359,7 +361,7 @@ export function TicketingWehaveioV2Screen() {
 
                         {expandedSections.includes(section.id) ? (
                           <div>
-                            <div className="grid grid-cols-[1fr_auto] gap-4 border-b border-[var(--wehave-v2-border)] bg-[var(--wehave-v2-surface-soft)] px-4 py-2 text-[11px] text-[var(--wehave-v2-muted)] sm:hidden">
+                            <div className="grid grid-cols-[1fr_auto] gap-4 bg-[var(--wehave-v2-surface-soft)] px-4 py-2 text-[11px] text-[var(--wehave-v2-muted)] sm:hidden">
                               <span>Sponsors</span>
                               <span>Upcoming</span>
                             </div>

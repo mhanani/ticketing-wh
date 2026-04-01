@@ -3,12 +3,10 @@ import type {
   TicketSection,
   TicketStatus,
 } from '@/shared/ticketing/types'
-import { seasonLabel } from '@/mocks/ticketing'
 
 export type TicketingColumnKey =
   | 'seasonTotal'
   | 'progress'
-  | 'season'
   | 'matchdays'
 
 interface SponsorTableRowProps {
@@ -56,7 +54,7 @@ export function SponsorTableRow({
   return (
     <>
       <div
-        className="hidden lg:grid lg:items-center lg:gap-4 lg:border-b lg:border-[var(--wehave-v2-border)] lg:px-4 lg:py-3 last:lg:border-b-0"
+        className="hidden lg:grid lg:items-center lg:gap-4 lg:px-4 lg:py-3"
         style={{ gridTemplateColumns: desktopGridTemplate }}
       >
         <div className="flex min-w-0 items-center gap-3">
@@ -98,12 +96,6 @@ export function SponsorTableRow({
                 </div>
               </div>
             </div>
-          </div>
-        ) : null}
-
-        {visibleColumns.includes('season') ? (
-          <div className="flex h-full items-center justify-center text-center text-sm text-[var(--wehave-v2-ink-soft)]">
-            {seasonLabel}
           </div>
         ) : null}
 
@@ -151,7 +143,7 @@ export function SponsorTableRow({
         </div>
       </div>
 
-      <div className="border-b border-[var(--wehave-v2-border)] px-4 py-4 last:border-b-0 lg:hidden">
+      <div className="px-4 py-4 lg:hidden">
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-start gap-3">
             <div

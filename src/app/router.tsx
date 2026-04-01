@@ -77,7 +77,7 @@ export const router = createBrowserRouter([
       {
         path: 'ticketing-wehaveio',
         element: <TicketingWehaveioV2Screen />,
-        handle: { title: 'Tickets' },
+        handle: { title: 'Tickets', hideShellHeader: true },
       },
     ],
   },

@@ -14,7 +14,7 @@ import {
   Trophy,
   Users,
 } from 'lucide-react'
-import { NavLink, Outlet, useMatches } from 'react-router-dom'
+import { NavLink, Outlet, useLocation, useMatches } from 'react-router-dom'
 
 interface NavItem {
   label: string
@@ -69,11 +69,15 @@ const navigationGroups: NavGroup[] = [
 ]
 
 export function AppShell() {
+  const location = useLocation()
   const matches = useMatches()
-  const currentTitle =
+  const currentHandle =
     matches.at(-1)?.handle && typeof matches.at(-1)?.handle === 'object'
-      ? (matches.at(-1)?.handle as { title?: string }).title ?? 'Workspace'
-      : 'Workspace'
+      ? (matches.at(-1)?.handle as { title?: string; hideShellHeader?: boolean })
+      : null
+  const currentTitle = currentHandle?.title ?? 'Workspace'
+  const hideShellHeader =
+    currentHandle?.hideShellHeader ?? location.pathname.startsWith('/ticketing-wehaveio')
 
   return (
     <div className="min-h-screen bg-[#f9f9fa] text-[#52525b]">
@@ -146,16 +150,18 @@ export function AppShell() {
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-10 border-b border-[#e4e4e7] bg-white/95 backdrop-blur-sm">
-            <div className="flex items-center gap-4 px-4 py-3 sm:px-5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-[8px] border border-[#e4e4e7] bg-[#fafafa] text-[#71717b] lg:hidden">
-                <NavIcon name="planning" />
+          {hideShellHeader ? null : (
+            <header className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm">
+              <div className="flex items-center gap-4 px-4 py-3 sm:px-5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-[8px] border border-[#e4e4e7] bg-[#fafafa] text-[#71717b] lg:hidden">
+                  <NavIcon name="planning" />
+                </div>
+                <h1 className="truncate text-3xl font-bold text-[#18181b] [font-family:var(--font-geist-sans)]">
+                  {currentTitle}
+                </h1>
               </div>
-              <h1 className="truncate text-xl font-semibold tracking-[-0.03em] text-[#18181b]">
-                {currentTitle}
-              </h1>
-            </div>
-          </header>
+            </header>
+          )}
 
           <div className="min-h-0 flex-1">
             <Outlet />

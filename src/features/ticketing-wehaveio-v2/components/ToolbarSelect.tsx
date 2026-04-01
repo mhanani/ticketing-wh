@@ -15,6 +15,7 @@ interface ToolbarSelectProps {
   options: Array<{ value: string; label: string }>
   icon: ReactNode
   isActive?: boolean
+  labelClassName?: string
 }
 
 export function ToolbarSelect({
@@ -25,6 +26,7 @@ export function ToolbarSelect({
   options,
   icon,
   isActive = false,
+  labelClassName,
 }: ToolbarSelectProps) {
   return (
     <label
@@ -37,7 +39,9 @@ export function ToolbarSelect({
       <span className="pointer-events-none flex items-center justify-center">
         {icon}
       </span>
-      <span className="pointer-events-none whitespace-nowrap">{label}</span>
+      <span className={`pointer-events-none whitespace-nowrap ${labelClassName ?? ''}`}>
+        {label}
+      </span>
       <select
         aria-label={ariaLabel}
         value={value}
