@@ -7,35 +7,23 @@ describe('App routes', () => {
     vi.resetModules()
   })
 
-  it('renders the existing ticketing overview on the default route', async () => {
-    vi.doMock('@/features/ticketing/screens/TicketingOverviewScreen', () => ({
-      TicketingOverviewScreen: () => <div>default-route-screen</div>,
-    }))
-    vi.doMock(
-      '@/features/ticketing-wehaveio/screens/TicketingWehaveioScreen',
-      () => ({
-        TicketingWehaveioScreen: () => <div>wehaveio-route-screen</div>,
-      }),
-    )
-
+  it('renders the simulated home screen on the default route', async () => {
     const { App } = await import('./App')
 
     render(<App />)
 
-    expect(screen.getByText('default-route-screen')).toBeInTheDocument()
-    expect(screen.queryByText('wehaveio-route-screen')).not.toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Home', level: 1 }),
+    ).toBeInTheDocument()
   })
 
   it('renders the wehaveio ticketing feature on /ticketing-wehaveio', async () => {
     window.history.replaceState({}, '', '/ticketing-wehaveio')
 
-    vi.doMock('@/features/ticketing/screens/TicketingOverviewScreen', () => ({
-      TicketingOverviewScreen: () => <div>default-route-screen</div>,
-    }))
     vi.doMock(
-      '@/features/ticketing-wehaveio/screens/TicketingWehaveioScreen',
+      '@/features/ticketing-wehaveio-v2/screens/TicketingWehaveioV2Screen',
       () => ({
-        TicketingWehaveioScreen: () => <div>wehaveio-route-screen</div>,
+        TicketingWehaveioV2Screen: () => <div>wehaveio-v2-route-screen</div>,
       }),
     )
 
@@ -43,7 +31,6 @@ describe('App routes', () => {
 
     render(<App />)
 
-    expect(screen.getByText('wehaveio-route-screen')).toBeInTheDocument()
-    expect(screen.queryByText('default-route-screen')).not.toBeInTheDocument()
+    expect(screen.getByText('wehaveio-v2-route-screen')).toBeInTheDocument()
   })
 })

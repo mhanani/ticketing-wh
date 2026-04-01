@@ -3,24 +3,26 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 
-import { TicketingWehaveioScreen } from './TicketingWehaveioScreen'
+import { TicketingWehaveioV2Screen } from './TicketingWehaveioV2Screen'
 
-function renderScreen(initialEntries: string[] = ['/ticketing-wehaveio']) {
+function renderScreen(initialEntries: string[] = ['/ticketing-wehaveio-v2']) {
   return render(
     <MemoryRouter initialEntries={initialEntries}>
-      <TicketingWehaveioScreen />
+      <TicketingWehaveioV2Screen />
     </MemoryRouter>,
   )
 }
 
-describe('TicketingWehaveioScreen', () => {
-  it('renders the redesigned header and grouped rows', () => {
+describe('TicketingWehaveioV2Screen', () => {
+  it('renders the v2 grouped layout and table-style columns', () => {
     renderScreen()
 
-    expect(screen.getByText('Ticketing Overview')).toBeInTheDocument()
     expect(
-      screen.queryByText(/wehave.io inspired workspace/i),
-    ).not.toBeInTheDocument()
+      screen.getByText(
+        'Rights-page density adapted for multi-sponsor ticket allocations.',
+      ),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Upcoming matchdays')).toBeInTheDocument()
     expect(screen.getAllByText('Business Seats Section 136').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Munro').length).toBeGreaterThanOrEqual(2)
   })
@@ -35,17 +37,17 @@ describe('TicketingWehaveioScreen', () => {
     expect(screen.getAllByText('Globex Corp').length).toBeGreaterThan(0)
   })
 
-  it('switches matchday cells to the selected ticket status', async () => {
+  it('switches the status metric through the toolbar', async () => {
     const user = userEvent.setup()
     renderScreen()
 
-    await user.selectOptions(screen.getByDisplayValue('Distributed'), 'allocated')
+    await user.selectOptions(screen.getByLabelText('Status'), 'allocated')
 
     expect(screen.getByDisplayValue('Allocated')).toBeInTheDocument()
     expect(screen.getAllByText('Allocated').length).toBeGreaterThan(0)
   })
 
-  it('collapses and re-expands a section header', async () => {
+  it('collapses and expands a section group', async () => {
     const user = userEvent.setup()
     renderScreen()
 
@@ -62,7 +64,7 @@ describe('TicketingWehaveioScreen', () => {
     expect(screen.getAllByText('TechCorp').length).toBeGreaterThan(0)
   })
 
-  it('opens the restyled details drawer from a matchday cell', async () => {
+  it('opens the v2 details drawer from a matchday cell and preserves selection state', async () => {
     const user = userEvent.setup()
     renderScreen()
 
@@ -71,7 +73,16 @@ describe('TicketingWehaveioScreen', () => {
     )
 
     expect(screen.getByText('Ticket details')).toBeInTheDocument()
-    expect(screen.getAllByText('Matchday 24').length).toBeGreaterThan(0)
+    expect(screen.getByText('Assigned and reserved seats for the selected matchday.')).toBeInTheDocument()
     expect(screen.getByText('Thomas Munro')).toBeInTheDocument()
+  })
+
+  it('renders an empty state when the search removes all sponsors', async () => {
+    const user = userEvent.setup()
+    renderScreen()
+
+    await user.type(screen.getByPlaceholderText('Search sponsor...'), 'NoMatch')
+
+    expect(screen.getByText('No sponsors match this view')).toBeInTheDocument()
   })
 })
