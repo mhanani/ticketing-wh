@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
@@ -19,7 +19,7 @@ describe('TicketingWehaveioV2Screen', () => {
 
     expect(
       screen.getByText(
-        'Rights-page density adapted for multi-sponsor ticket allocations.',
+        'Sponsor ticket allocations across upcoming matchdays.',
       ),
     ).toBeInTheDocument()
     expect(screen.getByText('Upcoming matchdays')).toBeInTheDocument()
@@ -31,10 +31,24 @@ describe('TicketingWehaveioV2Screen', () => {
     const user = userEvent.setup()
     renderScreen()
 
-    await user.type(screen.getByPlaceholderText('Search sponsor...'), 'Globex')
+    await user.click(screen.getByRole('button', { name: 'Search' }))
+    await user.type(screen.getByPlaceholderText('Search Assets...'), 'Globex')
 
     expect(screen.queryAllByText('TechCorp')).toHaveLength(0)
     expect(screen.getAllByText('Globex Corp').length).toBeGreaterThan(0)
+  })
+
+  it('toggles visible desktop columns from the columns menu', async () => {
+    const user = userEvent.setup()
+    renderScreen()
+
+    await user.click(screen.getByRole('button', { name: 'Columns' }))
+    await user.click(screen.getByRole('menuitemcheckbox', { name: 'Season total' }))
+
+    const header = screen.getByTestId('ticketing-columns-header')
+
+    expect(within(header).queryByText('Season total')).not.toBeInTheDocument()
+    expect(within(header).getByText('Progress')).toBeInTheDocument()
   })
 
   it('switches the status metric through the toolbar', async () => {
@@ -81,7 +95,8 @@ describe('TicketingWehaveioV2Screen', () => {
     const user = userEvent.setup()
     renderScreen()
 
-    await user.type(screen.getByPlaceholderText('Search sponsor...'), 'NoMatch')
+    await user.click(screen.getByRole('button', { name: 'Search' }))
+    await user.type(screen.getByPlaceholderText('Search Assets...'), 'NoMatch')
 
     expect(screen.getByText('No sponsors match this view')).toBeInTheDocument()
   })

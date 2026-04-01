@@ -3,11 +3,20 @@ import type {
   TicketSection,
   TicketStatus,
 } from '@/shared/ticketing/types'
+import { seasonLabel } from '@/mocks/ticketing'
+
+export type TicketingColumnKey =
+  | 'seasonTotal'
+  | 'progress'
+  | 'season'
+  | 'matchdays'
 
 interface SponsorTableRowProps {
   section: TicketSection
   sponsor: SponsorAllocation
   metricStatus: TicketStatus
+  visibleColumns: TicketingColumnKey[]
+  desktopGridTemplate: string
   onOpenDetails: (sectionId: string, sponsorId: string, matchId: string) => void
 }
 
@@ -15,6 +24,8 @@ export function SponsorTableRow({
   section,
   sponsor,
   metricStatus,
+  visibleColumns,
+  desktopGridTemplate,
   onOpenDetails,
 }: SponsorTableRowProps) {
   const totalDistributed = sponsor.matchdays.reduce(
@@ -44,7 +55,10 @@ export function SponsorTableRow({
 
   return (
     <>
-      <div className="hidden lg:grid lg:grid-cols-[minmax(240px,1.2fr)_minmax(110px,0.5fr)_minmax(220px,0.9fr)_minmax(110px,0.45fr)_minmax(420px,1.55fr)_48px] lg:items-center lg:gap-4 lg:border-b lg:border-[var(--wehave-v2-border)] lg:px-4 lg:py-3 last:lg:border-b-0">
+      <div
+        className="hidden lg:grid lg:items-center lg:gap-4 lg:border-b lg:border-[var(--wehave-v2-border)] lg:px-4 lg:py-3 last:lg:border-b-0"
+        style={{ gridTemplateColumns: desktopGridTemplate }}
+      >
         <div className="flex min-w-0 items-center gap-3">
           <div
             className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-[10px] font-semibold text-white"
@@ -62,54 +76,62 @@ export function SponsorTableRow({
           </div>
         </div>
 
-        <div className="flex h-full items-center justify-center text-center text-sm font-medium text-[var(--wehave-v2-ink)]">
-          {sponsor.seasonTotal}
-        </div>
+        {visibleColumns.includes('seasonTotal') ? (
+          <div className="flex h-full items-center justify-center text-center text-sm font-medium text-[var(--wehave-v2-ink)]">
+            {sponsor.seasonTotal}
+          </div>
+        ) : null}
 
-        <div className="flex h-full items-center justify-center">
-          <div className="w-full max-w-[220px]">
-            <div className="flex items-center justify-between gap-2 text-[11px] text-[var(--wehave-v2-muted)]">
-              <span>{progressValue} done</span>
-              <span>{sponsor.seasonTotal - progressValue} left</span>
-            </div>
-            <div className="mt-1.5 min-w-0 flex-1">
-              <div className="h-1 overflow-hidden rounded-full bg-[var(--wehave-v2-surface-muted)]">
-                <div
-                  className="h-full rounded-full bg-[var(--wehave-v2-ring)]"
-                  style={{ width: `${progressPercent}%` }}
-                />
+        {visibleColumns.includes('progress') ? (
+          <div className="flex h-full items-center justify-center">
+            <div className="w-full max-w-[220px]">
+              <div className="flex items-center justify-between gap-2 text-[11px] text-[var(--wehave-v2-muted)]">
+                <span className="text-[#826AF6]">{progressValue} done</span>
+                <span>{sponsor.seasonTotal - progressValue} left</span>
+              </div>
+              <div className="mt-1.5 min-w-0 flex-1">
+                <div className="h-1 overflow-hidden rounded-full bg-[var(--wehave-v2-surface-muted)]">
+                  <div
+                    className="h-full rounded-full bg-[var(--wehave-v2-ring)]"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ) : null}
 
-        <div className="flex h-full items-center justify-center text-center text-sm text-[var(--wehave-v2-ink-soft)]">
-          2025/26
-        </div>
+        {visibleColumns.includes('season') ? (
+          <div className="flex h-full items-center justify-center text-center text-sm text-[var(--wehave-v2-ink-soft)]">
+            {seasonLabel}
+          </div>
+        ) : null}
 
-        <div className="grid items-center grid-cols-3 gap-2 justify-self-stretch">
-          {sponsor.matchdays.map((matchday) => (
-            <button
-              key={matchday.matchId}
-              type="button"
-              onClick={() =>
-                onOpenDetails(section.id, sponsor.sponsor.id, matchday.matchId)
-              }
-              aria-label={`${sponsor.sponsor.name} ${matchday.opponent} details`}
-              className="rounded-md border border-[var(--wehave-v2-border)] bg-[var(--wehave-v2-surface-soft)] px-2.5 py-2 text-left transition hover:border-[var(--wehave-v2-primary-border)] hover:bg-white"
-            >
-              <div className="truncate text-[11px] font-medium text-[var(--wehave-v2-ink-soft)]">
-                {matchday.date}
-              </div>
-              <div className="mt-1 truncate text-[13px] font-medium text-[var(--wehave-v2-ink)]">
-                {matchday.opponent}
-              </div>
-              <div className="mt-2 inline-flex rounded-md border border-[var(--wehave-v2-primary-border)] bg-[var(--wehave-v2-primary-soft)] px-2 py-0.5 text-xs font-medium text-[var(--wehave-v2-primary-text)]">
-                {matchday[metricStatus]}
-              </div>
-            </button>
-          ))}
-        </div>
+        {visibleColumns.includes('matchdays') ? (
+          <div className="grid items-center grid-cols-3 gap-2 justify-self-stretch">
+            {sponsor.matchdays.map((matchday) => (
+              <button
+                key={matchday.matchId}
+                type="button"
+                onClick={() =>
+                  onOpenDetails(section.id, sponsor.sponsor.id, matchday.matchId)
+                }
+                aria-label={`${sponsor.sponsor.name} ${matchday.opponent} details`}
+                className="rounded-md border border-[var(--wehave-v2-border)] bg-[var(--wehave-v2-surface-soft)] px-2.5 py-2 text-left transition hover:border-[var(--wehave-v2-primary-border)] hover:bg-white"
+              >
+                <div className="truncate text-[11px] font-medium text-[var(--wehave-v2-ink-soft)]">
+                  {matchday.date}
+                </div>
+                <div className="mt-1 truncate text-[13px] font-medium text-[var(--wehave-v2-ink)]">
+                  {matchday.opponent}
+                </div>
+                <div className="mt-2 inline-flex rounded-md border border-[var(--wehave-v2-primary-border)] bg-[var(--wehave-v2-primary-soft)] px-2 py-0.5 text-xs font-medium text-[var(--wehave-v2-primary-text)]">
+                  {matchday[metricStatus]}
+                </div>
+              </button>
+            ))}
+          </div>
+        ) : null}
 
         <div className="flex h-full items-center justify-center">
           <button

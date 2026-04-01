@@ -41,12 +41,6 @@ export interface TicketSection {
   sponsors: SponsorAllocation[]
 }
 
-export interface TicketingFilterState {
-  searchTerm: string
-  status?: TicketStatus | 'all'
-  sectionId?: string | 'all'
-}
-
 export interface DrawerSelection {
   sectionId: string
   sponsorId: string

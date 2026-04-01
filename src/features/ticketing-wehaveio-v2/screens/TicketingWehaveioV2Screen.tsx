@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { ArrowUp, ArrowUpDown, Check, Columns3, Funnel, Search } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import { seasonLabel, ticketSections } from '@/mocks/ticketing'
@@ -10,31 +11,67 @@ import {
 } from '@/shared/ticketing/utils'
 
 import { SectionGroupHeader } from '../components/SectionGroupHeader'
-import { SponsorTableRow } from '../components/SponsorTableRow'
+import {
+  SponsorTableRow,
+  type TicketingColumnKey,
+} from '../components/SponsorTableRow'
 import { TicketDetailsDrawer } from '../components/TicketDetailsDrawer'
+import {
+  ToolbarSelect,
+  toolbarControlActiveClassName,
+  toolbarControlBaseClassName,
+  toolbarControlInactiveClassName,
+} from '../components/ToolbarSelect'
 import { wehaveV2Theme } from '../theme'
 
 type SortOption = 'season' | 'upcoming'
+
+const columnOptions: Array<{ key: TicketingColumnKey; label: string; width: string }> = [
+  { key: 'seasonTotal', label: 'Season total', width: 'minmax(110px,0.5fr)' },
+  { key: 'progress', label: 'Progress', width: 'minmax(220px,0.9fr)' },
+  { key: 'season', label: 'Season', width: 'minmax(110px,0.45fr)' },
+  { key: 'matchdays', label: 'Upcoming matchdays', width: 'minmax(420px,1.55fr)' },
+]
 
 export function TicketingWehaveioV2Screen() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [searchTerm, setSearchTerm] = useState('')
   const [status, setStatus] = useState<TicketStatus>('distributed')
-  const [sectionId, setSectionId] = useState('all')
   const [sortBy, setSortBy] = useState<SortOption>('season')
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isColumnsOpen, setIsColumnsOpen] = useState(false)
+  const [visibleColumns, setVisibleColumns] = useState<TicketingColumnKey[]>(
+    columnOptions.map((column) => column.key),
+  )
   const [expandedSections, setExpandedSections] = useState<string[]>(
     ticketSections.map((section) => section.id),
   )
+  const searchInputRef = useRef<HTMLInputElement | null>(null)
+  const columnsMenuRef = useRef<HTMLDivElement | null>(null)
 
   const matchdays = getUpcomingMatchdays(ticketSections)
   const selectedMatchId = matchdays[0]?.matchId ?? ''
 
   const filteredSections = sortSponsors(
-    filterSections(ticketSections, searchTerm, sectionId),
+    filterSections(ticketSections, searchTerm, 'all'),
     sortBy,
     selectedMatchId,
     status,
   )
+
+  const desktopGridTemplate = useMemo(() => {
+    const template = ['minmax(240px,1.2fr)']
+
+    for (const column of columnOptions) {
+      if (visibleColumns.includes(column.key)) {
+        template.push(column.width)
+      }
+    }
+
+    template.push('48px')
+
+    return template.join(' ')
+  }, [visibleColumns])
 
   const drawerSelection =
     searchParams.get('section') &&
@@ -71,6 +108,54 @@ export function TicketingWehaveioV2Screen() {
     )
   }
 
+  useEffect(() => {
+    if (isSearchOpen) {
+      searchInputRef.current?.focus()
+    }
+  }, [isSearchOpen])
+
+  useEffect(() => {
+    function handlePointerDown(event: MouseEvent) {
+      if (!columnsMenuRef.current?.contains(event.target as Node)) {
+        setIsColumnsOpen(false)
+      }
+    }
+
+    if (isColumnsOpen) {
+      document.addEventListener('mousedown', handlePointerDown)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown)
+    }
+  }, [isColumnsOpen])
+
+  function openSearch() {
+    setIsSearchOpen(true)
+  }
+
+  function closeSearch() {
+    if (!searchTerm) {
+      setIsSearchOpen(false)
+    }
+  }
+
+  function toggleColumn(column: TicketingColumnKey) {
+    setVisibleColumns((current) => {
+      if (current.includes(column)) {
+        if (current.length === 1) {
+          return current
+        }
+
+        return current.filter((item) => item !== column)
+      }
+
+      return columnOptions
+        .map((option) => option.key)
+        .filter((key) => current.includes(key) || key === column)
+    })
+  }
+
   return (
     <div
       style={wehaveV2Theme}
@@ -89,12 +174,15 @@ export function TicketingWehaveioV2Screen() {
 
                 <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
                   <p className="min-w-0 text-sm text-[var(--wehave-v2-ink-soft)]">
-                    Rights-page density adapted for multi-sponsor ticket allocations.
+                    Sponsor ticket allocations across upcoming matchdays.
                   </p>
 
                   <div className="flex flex-wrap items-center gap-2 xl:justify-end">
                     <ToolbarSelect
                       ariaLabel="Status"
+                      label="Filter"
+                      icon={<Funnel className="h-4 w-4" strokeWidth={2} />}
+                      isActive={status !== 'distributed'}
                       value={status}
                       onChange={(value) => setStatus(value as TicketStatus)}
                       options={[
@@ -103,20 +191,65 @@ export function TicketingWehaveioV2Screen() {
                         { value: 'pending', label: 'Pending' },
                       ]}
                     />
-                    <ToolbarSelect
-                      ariaLabel="Section"
-                      value={sectionId}
-                      onChange={setSectionId}
-                      options={[
-                        { value: 'all', label: 'All sections' },
-                        ...ticketSections.map((section) => ({
-                          value: section.id,
-                          label: section.label,
-                        })),
-                      ]}
-                    />
+                    <div className="relative" ref={columnsMenuRef}>
+                      <button
+                        type="button"
+                        aria-label="Columns"
+                        aria-expanded={isColumnsOpen}
+                        onClick={() => setIsColumnsOpen((current) => !current)}
+                        className={`${toolbarControlBaseClassName} ${
+                          visibleColumns.length !== columnOptions.length
+                            ? toolbarControlActiveClassName
+                            : toolbarControlInactiveClassName
+                        }`}
+                      >
+                        <span className="flex items-center justify-center">
+                          <Columns3 className="h-4 w-4 shrink-0" strokeWidth={2} />
+                        </span>
+                        <span className="whitespace-nowrap">Columns</span>
+                      </button>
+
+                      {isColumnsOpen ? (
+                        <div className="absolute right-0 z-10 mt-2 w-56 rounded-xl border border-[var(--wehave-v2-border)] bg-[var(--wehave-v2-surface)] p-1.5 shadow-[0_18px_50px_rgba(15,23,42,0.14)]">
+                          {columnOptions.map((column) => {
+                            const checked = visibleColumns.includes(column.key)
+
+                            return (
+                              <button
+                                key={column.key}
+                                type="button"
+                                role="menuitemcheckbox"
+                                aria-checked={checked}
+                                onClick={() => toggleColumn(column.key)}
+                                className="flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-[13px] font-medium text-[var(--wehave-v2-ink)] transition hover:bg-[var(--wehave-v2-surface-soft)]"
+                              >
+                                <span>{column.label}</span>
+                                <span
+                                  className={`flex h-4 w-4 items-center justify-center rounded-sm border ${
+                                    checked
+                                      ? 'border-[var(--wehave-v2-primary)] bg-[var(--wehave-v2-primary)] text-white'
+                                      : 'border-[var(--wehave-v2-border-strong)] bg-[var(--wehave-v2-surface)] text-transparent'
+                                  }`}
+                                >
+                                  <Check className="h-3 w-3" strokeWidth={2.4} />
+                                </span>
+                              </button>
+                            )
+                          })}
+                        </div>
+                      ) : null}
+                    </div>
                     <ToolbarSelect
                       ariaLabel="Sort"
+                      label="Sort"
+                      icon={
+                        sortBy === 'season' ? (
+                          <ArrowUpDown className="h-4 w-4" strokeWidth={2} />
+                        ) : (
+                          <ArrowUp className="h-4 w-4" strokeWidth={2} />
+                        )
+                      }
+                      isActive={sortBy !== 'season'}
                       value={sortBy}
                       onChange={(value) => setSortBy(value as SortOption)}
                       options={[
@@ -125,15 +258,39 @@ export function TicketingWehaveioV2Screen() {
                       ]}
                     />
 
-                    <label className="flex h-8 min-w-[220px] items-center gap-2 rounded-md border border-[var(--wehave-v2-border)] bg-white px-3 text-sm text-[var(--wehave-v2-ink)]">
-                      <SearchIcon />
-                      <input
-                        value={searchTerm}
-                        onChange={(event) => setSearchTerm(event.target.value)}
-                        placeholder="Search sponsor..."
-                        className="w-full border-none bg-transparent text-[var(--wehave-v2-ink)] outline-none placeholder:text-[var(--wehave-v2-muted)]"
-                      />
-                    </label>
+                    {isSearchOpen || searchTerm ? (
+                      <label className="relative min-w-[240px] shrink-0">
+                        <span className="pointer-events-none absolute left-3 top-1/2 z-10 flex -translate-y-1/2 items-center justify-center text-[var(--wehave-v2-muted)]">
+                          <Search className="h-4 w-4 shrink-0" strokeWidth={2} />
+                        </span>
+                        <input
+                          ref={searchInputRef}
+                          aria-label="Search"
+                          value={searchTerm}
+                          onChange={(event) => setSearchTerm(event.target.value)}
+                          onBlur={closeSearch}
+                          placeholder="Search Assets..."
+                          style={{ font: 'inherit' }}
+                          className={`flex h-9 w-full rounded-[8.4px] border bg-[var(--wehave-v2-surface)] py-2 pr-3 pl-9 text-sm leading-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] outline-none transition-[color,box-shadow,border-color] placeholder:text-[var(--wehave-v2-muted)] focus-visible:ring-[3px] focus-visible:ring-[rgba(166,133,255,0.45)] ${
+                            searchTerm
+                              ? 'border-[var(--wehave-v2-primary)] text-[var(--wehave-v2-primary)]'
+                              : 'border-[var(--wehave-v2-border)] text-[var(--wehave-v2-ink)]'
+                          }`}
+                        />
+                      </label>
+                    ) : (
+                      <button
+                        type="button"
+                        aria-label="Search"
+                        onClick={openSearch}
+                        className={`${toolbarControlBaseClassName} ${toolbarControlInactiveClassName}`}
+                      >
+                        <span className="flex items-center justify-center">
+                          <Search className="h-4 w-4 shrink-0" strokeWidth={2} />
+                        </span>
+                        <span className="whitespace-nowrap">Search</span>
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -141,12 +298,24 @@ export function TicketingWehaveioV2Screen() {
 
             <div className="px-3 py-3 sm:px-4 sm:py-4">
               <div className="hidden rounded-[10px] border border-[var(--wehave-v2-border)] bg-[var(--wehave-v2-surface-soft)] px-4 py-3 lg:block">
-                <div className="grid grid-cols-[minmax(240px,1.2fr)_minmax(110px,0.5fr)_minmax(220px,0.9fr)_minmax(110px,0.45fr)_minmax(420px,1.55fr)_48px] items-center gap-4 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--wehave-v2-muted)]">
-                  <div className="text-left">Asset</div>
-                  <div className="text-center">Total price</div>
-                  <div className="text-center">Progress</div>
-                  <div className="text-center">Season</div>
-                  <div className="text-center">Upcoming matchdays</div>
+                <div
+                  data-testid="ticketing-columns-header"
+                  className="grid items-center gap-4 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--wehave-v2-muted)]"
+                  style={{ gridTemplateColumns: desktopGridTemplate }}
+                >
+                  <div className="text-left">Sponsor</div>
+                  {visibleColumns.includes('seasonTotal') ? (
+                    <div className="text-center">Season total</div>
+                  ) : null}
+                  {visibleColumns.includes('progress') ? (
+                    <div className="text-center">Progress</div>
+                  ) : null}
+                  {visibleColumns.includes('season') ? (
+                    <div className="text-center">Season</div>
+                  ) : null}
+                  {visibleColumns.includes('matchdays') ? (
+                    <div className="text-center">Upcoming matchdays</div>
+                  ) : null}
                   <div />
                 </div>
               </div>
@@ -200,6 +369,8 @@ export function TicketingWehaveioV2Screen() {
                                 section={section}
                                 sponsor={sponsor}
                                 metricStatus={status}
+                                visibleColumns={visibleColumns}
+                                desktopGridTemplate={desktopGridTemplate}
                                 onOpenDetails={openDetails}
                               />
                             ))}
@@ -230,66 +401,5 @@ export function TicketingWehaveioV2Screen() {
         />
       </div>
     </div>
-  )
-}
-
-interface ToolbarSelectProps {
-  ariaLabel: string
-  value: string
-  onChange: (value: string) => void
-  options: Array<{ value: string; label: string }>
-}
-
-function ToolbarSelect({
-  ariaLabel,
-  value,
-  onChange,
-  options,
-}: ToolbarSelectProps) {
-  return (
-    <label className="relative">
-      <select
-        aria-label={ariaLabel}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="h-8 appearance-none rounded-md border border-[var(--wehave-v2-border)] bg-white px-3 pr-8 text-sm text-[var(--wehave-v2-ink)] outline-none ring-0 transition focus:border-[var(--wehave-v2-ring)]"
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      <span className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-[var(--wehave-v2-muted)]">
-        <ChevronDownIcon />
-      </span>
-    </label>
-  )
-}
-
-function SearchIcon() {
-  return (
-    <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5" aria-hidden="true">
-      <path
-        d="M11.75 11.75L14 14M7 12.25A5.25 5.25 0 107 1.75a5.25 5.25 0 000 10.5z"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
-
-function ChevronDownIcon() {
-  return (
-    <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5" aria-hidden="true">
-      <path
-        d="M4.5 6.25L8 9.75L11.5 6.25"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   )
 }

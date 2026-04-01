@@ -14,7 +14,7 @@ export const ticketSections: TicketSection[] = [
           name: 'Munro',
           tier: 'Partner',
           badge: 'MU',
-          accent: '#5736F3',
+          accent: '#5020E5',
         },
         seasonTotal: 45,
         matchdays: [
@@ -199,7 +199,7 @@ export const ticketSections: TicketSection[] = [
           name: 'Munro',
           tier: 'Partner',
           badge: 'MU',
-          accent: '#5736F3',
+          accent: '#5020E5',
         },
         seasonTotal: 20,
         matchdays: [
@@ -350,7 +350,7 @@ export const ticketSections: TicketSection[] = [
           name: 'Munro',
           tier: 'Partner',
           badge: 'MU',
-          accent: '#5736F3',
+          accent: '#5020E5',
         },
         seasonTotal: 18,
         matchdays: [

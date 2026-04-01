@@ -1,5 +1,8 @@
+import { useEffect } from 'react'
+
 import type { TicketStatus, TicketSection } from '@/shared/ticketing/types'
 import { getSelectedTicketSlice } from '@/shared/ticketing/utils'
+import { seasonLabel } from '@/mocks/ticketing'
 
 interface TicketDetailsDrawerProps {
   sections: TicketSection[]
@@ -13,7 +16,7 @@ interface TicketDetailsDrawerProps {
 
 const badgeTone: Record<TicketStatus, string> = {
   distributed:
-    'border-[rgba(87,54,243,0.18)] bg-[rgba(87,54,243,0.08)] text-[rgba(87,54,243,0.92)]',
+    'border-[rgba(80,32,229,0.18)] bg-[rgba(80,32,229,0.08)] text-[rgba(80,32,229,0.92)]',
   allocated:
     'border-[rgba(14,116,144,0.18)] bg-[rgba(14,116,144,0.08)] text-[#0f766e]',
   pending:
@@ -25,6 +28,16 @@ export function TicketDetailsDrawer({
   selection,
   onClose,
 }: TicketDetailsDrawerProps) {
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') onClose()
+    }
+    if (selection) {
+      document.addEventListener('keydown', handleKeyDown)
+      return () => document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [selection, onClose])
+
   const selected = getSelectedTicketSlice(sections, selection)
   const entryCount =
     selected?.sponsor.detailsByMatchday[selected.matchday.matchId]?.length ?? 0
@@ -86,7 +99,7 @@ export function TicketDetailsDrawer({
                   {selected.sponsor.sponsor.name}
                 </div>
                 <div className="mt-1 text-sm text-[var(--wehave-v2-ink-soft)]">
-                  {selected.sponsor.sponsor.tier} · Season 2025/26
+                  {selected.sponsor.sponsor.tier} · {seasonLabel}
                 </div>
               </div>
 
