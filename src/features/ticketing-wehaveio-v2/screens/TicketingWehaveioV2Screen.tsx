@@ -1,14 +1,15 @@
 import {
   ArrowUp,
   ArrowUpDown,
+  ChevronDown,
   Columns3,
+  Download,
   Funnel,
   Search,
 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-import { Badge } from '@/components/ui/badge'
 import { Button, buttonVariants } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -21,7 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { seasonLabel, ticketSections } from '@/mocks/ticketing'
+import { seasonOptions, ticketSectionsBySeason } from '@/mocks/ticketing'
 import type { TicketStatus } from '@/shared/ticketing/types'
 import {
   filterSections,
@@ -61,16 +62,18 @@ export function TicketingWehaveioV2Screen() {
   const [visibleColumns, setVisibleColumns] = useState<TicketingColumnKey[]>(
     columnOptions.map((column) => column.key),
   )
+  const [season, setSeason] = useState(seasonOptions[0].value)
+  const sections = ticketSectionsBySeason[season] ?? []
   const [expandedSections, setExpandedSections] = useState<string[]>(
-    ticketSections.map((section) => section.id),
+    sections.map((section) => section.id),
   )
   const searchInputRef = useRef<HTMLInputElement | null>(null)
 
-  const matchdays = getUpcomingMatchdays(ticketSections)
+  const matchdays = getUpcomingMatchdays(sections)
   const selectedMatchId = matchdays[0]?.matchId ?? ''
 
   const filteredSections = sortSponsors(
-    filterSections(ticketSections, searchTerm, 'all'),
+    filterSections(sections, searchTerm, 'all'),
     sortBy,
     selectedMatchId,
     status,
@@ -126,6 +129,10 @@ export function TicketingWehaveioV2Screen() {
   }
 
   useEffect(() => {
+    setExpandedSections(sections.map((s) => s.id))
+  }, [season])
+
+  useEffect(() => {
     if (isSearchOpen) {
       searchInputRef.current?.focus()
     }
@@ -174,9 +181,29 @@ export function TicketingWehaveioV2Screen() {
                       Tickets
                     </h1>
                     <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant="primary-soft" className="px-2.5 py-1">
-                        {seasonLabel}
-                      </Badge>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger
+                          className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-primary/18 bg-primary/8 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/12"
+                        >
+                          {seasonOptions.find((o) => o.value === season)?.label}
+                          <ChevronDown className="h-3 w-3" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="w-48">
+                          <DropdownMenuRadioGroup
+                            value={season}
+                            onValueChange={setSeason}
+                          >
+                            {seasonOptions.map((option) => (
+                              <DropdownMenuRadioItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </DropdownMenuRadioItem>
+                            ))}
+                          </DropdownMenuRadioGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                     <p className="min-w-0 text-sm text-muted-foreground">
                       Sponsor ticket allocations across upcoming matchdays.
@@ -313,6 +340,14 @@ export function TicketingWehaveioV2Screen() {
                         ))}
                       </DropdownMenuContent>
                     </DropdownMenu>
+
+                    {/* Export CTA */}
+                    <Button
+                      className="bg-[#5736F3] text-white hover:bg-[#4829E6]"
+                    >
+                      <Download className="h-4 w-4" />
+                      Export
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -361,10 +396,7 @@ export function TicketingWehaveioV2Screen() {
                     )
 
                     return (
-                      <section
-                        key={section.id}
-                        className="overflow-hidden rounded-[10px] border border-border bg-white"
-                      >
+                      <section key={section.id}>
                         <SectionGroupHeader
                           section={section}
                           sponsorCount={sponsors.length}
@@ -377,21 +409,25 @@ export function TicketingWehaveioV2Screen() {
                         />
 
                         {expandedSections.includes(section.id) ? (
-                          <div>
+                          <div className="ml-4 sm:ml-5">
                             <div className="grid grid-cols-[1fr_auto] gap-4 bg-[#fafafc] px-4 py-2 text-[11px] text-muted-foreground sm:hidden">
                               <span>Sponsors</span>
                               <span>Upcoming</span>
                             </div>
-                            {sponsors.map((sponsor) => (
-                              <SponsorTableRow
-                                key={`${section.id}-${sponsor.sponsor.id}`}
-                                section={section}
-                                sponsor={sponsor}
-                                metricStatus={status}
-                                visibleColumns={visibleColumns}
-                                desktopGridTemplate={desktopGridTemplate}
-                                onOpenDetails={openDetails}
-                              />
+                            {sponsors.map((sponsor, index) => (
+                              <div key={`${section.id}-${sponsor.sponsor.id}`}>
+                                {index > 0 ? (
+                                  <div className="border-t border-border" />
+                                ) : null}
+                                <SponsorTableRow
+                                  section={section}
+                                  sponsor={sponsor}
+                                  metricStatus={status}
+                                  visibleColumns={visibleColumns}
+                                  desktopGridTemplate={desktopGridTemplate}
+                                  onOpenDetails={openDetails}
+                                />
+                              </div>
                             ))}
                           </div>
                         ) : null}
@@ -414,7 +450,7 @@ export function TicketingWehaveioV2Screen() {
         </main>
 
         <TicketDetailsDrawer
-          sections={ticketSections}
+          sections={sections}
           selection={drawerSelection}
           onClose={closeDetails}
         />

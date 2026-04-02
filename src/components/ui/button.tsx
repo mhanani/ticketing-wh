@@ -21,7 +21,7 @@ const buttonVariants = cva(
         destructive:
           'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         active:
-          'border border-primary bg-background text-primary hover:bg-primary/5',
+          'border border-primary bg-[#EEEBFE] text-primary hover:bg-[#e5e0fd]',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3 gap-2',
