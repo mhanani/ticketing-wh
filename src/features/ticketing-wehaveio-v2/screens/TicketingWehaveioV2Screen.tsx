@@ -409,15 +409,20 @@ export function TicketingWehaveioV2Screen() {
                         />
 
                         {expandedSections.includes(section.id) ? (
-                          <div className="ml-4 sm:ml-5">
+                          <div className="relative ml-5 pl-5 sm:ml-6 sm:pl-6">
+                            {/* Tree line */}
+                            <div className="absolute bottom-4 left-0 top-0 w-px bg-border/80" />
+
                             <div className="grid grid-cols-[1fr_auto] gap-4 bg-[#fafafc] px-4 py-2 text-[11px] text-muted-foreground sm:hidden">
                               <span>Sponsors</span>
                               <span>Upcoming</span>
                             </div>
                             {sponsors.map((sponsor, index) => (
-                              <div key={`${section.id}-${sponsor.sponsor.id}`}>
+                              <div key={`${section.id}-${sponsor.sponsor.id}`} className="relative">
+                                {/* Tree branch */}
+                                <div className="absolute left-[-20px] top-1/2 h-px w-4 bg-border/80 sm:left-[-24px] sm:w-5" />
                                 {index > 0 ? (
-                                  <div className="border-t border-border" />
+                                  <div className="border-t border-border/40" />
                                 ) : null}
                                 <SponsorTableRow
                                   section={section}

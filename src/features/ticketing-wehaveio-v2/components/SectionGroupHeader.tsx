@@ -28,7 +28,7 @@ export function SectionGroupHeader({
       onClick={onToggle}
       aria-expanded={isExpanded}
       aria-label={`${section.label} section`}
-      className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition-all duration-200 hover:bg-[#fafafc]/80 sm:px-5"
+      className="flex w-full items-center justify-between gap-4 border-y border-border/60 bg-white px-4 py-3 text-left shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-200 hover:bg-[#fafafc]/80 sm:px-5"
     >
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-3">
