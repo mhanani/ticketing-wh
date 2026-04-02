@@ -6,7 +6,7 @@ import type {
   TicketStatus,
 } from './types'
 
-export interface SectionRow {
+interface SectionRow {
   section: TicketSection
   sponsors: SponsorAllocation[]
 }
@@ -67,7 +67,7 @@ export function sortSponsors(
   }))
 }
 
-export function getMatchdayMetric(
+function getMatchdayMetric(
   sponsor: SponsorAllocation,
   matchId: string,
   status: TicketStatus,
