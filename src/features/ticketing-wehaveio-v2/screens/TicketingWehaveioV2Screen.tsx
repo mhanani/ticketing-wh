@@ -23,6 +23,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { seasonOptions, ticketSectionsBySeason } from '@/mocks/ticketing'
+import { exportTicketingCsv } from '@/shared/ticketing/export'
 import type { TicketStatus } from '@/shared/ticketing/types'
 import {
   filterSections,
@@ -344,6 +345,7 @@ export function TicketingWehaveioV2Screen() {
                     {/* Export CTA */}
                     <Button
                       className="bg-[#5736F3] text-white hover:bg-[#4829E6]"
+                      onClick={() => exportTicketingCsv(sections, season)}
                     >
                       <Download className="h-4 w-4" />
                       Export
