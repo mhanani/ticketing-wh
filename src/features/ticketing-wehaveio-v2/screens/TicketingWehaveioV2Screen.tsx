@@ -66,8 +66,13 @@ export function TicketingWehaveioV2Screen() {
   const [season, setSeason] = useState(seasonOptions[0].value)
   const sections = ticketSectionsBySeason[season] ?? []
   const [expandedSections, setExpandedSections] = useState<string[]>(
-    sections.map((section) => section.id),
+    sections.map((s) => s.id),
   )
+  const [prevSeason, setPrevSeason] = useState(season)
+  if (prevSeason !== season) {
+    setPrevSeason(season)
+    setExpandedSections(sections.map((s) => s.id))
+  }
   const searchInputRef = useRef<HTMLInputElement | null>(null)
 
   const matchdays = getUpcomingMatchdays(sections)
@@ -128,10 +133,6 @@ export function TicketingWehaveioV2Screen() {
         : [...current, sectionIdToToggle],
     )
   }
-
-  useEffect(() => {
-    setExpandedSections(sections.map((s) => s.id))
-  }, [season])
 
   useEffect(() => {
     if (isSearchOpen) {
