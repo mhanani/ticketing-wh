@@ -28,7 +28,7 @@ export function SectionGroupHeader({
       onClick={onToggle}
       aria-expanded={isExpanded}
       aria-label={`${section.label} section`}
-      className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition hover:bg-secondary/60 sm:px-5"
+      className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left transition-all duration-200 hover:bg-[#fafafc]/80 sm:px-5"
     >
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-3">
@@ -42,9 +42,9 @@ export function SectionGroupHeader({
           <Badge variant="primary-soft">
             {sponsorCount}
           </Badge>
-          <div className="hidden h-[3px] w-18 overflow-hidden rounded-full bg-secondary sm:block">
+          <div className="hidden h-1 w-18 overflow-hidden rounded-full bg-secondary sm:block">
             <div
-              className="h-full rounded-full bg-primary/50"
+              className="h-full rounded-full bg-gradient-to-r from-primary/40 to-primary/60 transition-all duration-500 ease-out"
               style={{ width: `${metricPercent}%` }}
             />
           </div>

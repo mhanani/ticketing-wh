@@ -55,7 +55,7 @@ export function SponsorTableRow({
   return (
     <>
       <div
-        className="hidden lg:grid lg:items-center lg:gap-4 lg:px-4 lg:py-3"
+        className="hidden transition-colors duration-200 hover:bg-[#fafafc]/60 lg:grid lg:items-center lg:gap-4 lg:px-4 lg:py-3"
         style={{ gridTemplateColumns: desktopGridTemplate }}
       >
         <div className="flex min-w-0 items-center gap-3">
@@ -89,9 +89,9 @@ export function SponsorTableRow({
                 <span>{sponsor.seasonTotal - progressValue} left</span>
               </div>
               <div className="mt-1.5 min-w-0 flex-1">
-                <div className="h-1 overflow-hidden rounded-full bg-secondary">
+                <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
                   <div
-                    className="h-full rounded-full bg-primary/50"
+                    className="h-full rounded-full bg-gradient-to-r from-primary/40 to-primary/60 transition-all duration-500 ease-out"
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
@@ -110,7 +110,7 @@ export function SponsorTableRow({
                   onOpenDetails(section.id, sponsor.sponsor.id, matchday.matchId)
                 }
                 aria-label={`${sponsor.sponsor.name} ${matchday.opponent} details`}
-                className="rounded-md border border-border bg-secondary px-2.5 py-2 text-left transition hover:border-primary/30 hover:bg-white"
+                className="rounded-lg border border-border/60 bg-gradient-to-br from-[#fafafc] to-white px-2.5 py-2 text-left shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-all duration-200 hover:border-primary/25 hover:shadow-[0_2px_8px_rgba(87,54,243,0.07)]"
               >
                 <div className="truncate text-[11px] font-medium text-muted-foreground">
                   {matchday.date}
@@ -129,7 +129,7 @@ export function SponsorTableRow({
         <div className="flex h-full items-center justify-center">
           <button
             type="button"
-            className="flex h-8 w-8 items-center justify-center rounded-md border border-border text-muted-foreground transition hover:border-primary/30 hover:text-primary"
+            className="flex h-8 w-8 items-center justify-center rounded-md border border-border/60 text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:bg-primary/5 hover:text-primary"
             onClick={() =>
               onOpenDetails(
                 section.id,
@@ -170,9 +170,9 @@ export function SponsorTableRow({
           </div>
         </div>
 
-        <div className="mt-3 h-1 overflow-hidden rounded-full bg-secondary">
+        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-secondary">
           <div
-            className="h-full rounded-full bg-primary/50"
+            className="h-full rounded-full bg-gradient-to-r from-primary/40 to-primary/60 transition-all duration-500 ease-out"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
@@ -186,7 +186,7 @@ export function SponsorTableRow({
                 onOpenDetails(section.id, sponsor.sponsor.id, matchday.matchId)
               }
               aria-label={`${sponsor.sponsor.name} ${matchday.opponent} details`}
-              className="rounded-md border border-border bg-secondary px-3 py-3 text-left"
+              className="rounded-lg border border-border/60 bg-gradient-to-br from-[#fafafc] to-white px-3 py-3 text-left shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-all duration-200 hover:shadow-[0_2px_8px_rgba(87,54,243,0.07)]"
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">

@@ -42,23 +42,28 @@ export function TicketDetailsDrawer({
 
   return (
     <>
+      {/* Backdrop */}
       <div
-        className={`fixed inset-0 z-30 bg-[#09090b]/12 transition ${
+        className={`fixed inset-0 z-30 bg-[#09090b]/15 backdrop-blur-[2px] transition-all duration-300 ease-out ${
           selected ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         }`}
         aria-hidden="true"
         onClick={onClose}
       />
+
+      {/* Drawer */}
       <aside
-        className={`fixed inset-y-0 right-0 z-40 w-full max-w-[34rem] border-l border-border bg-white/98 shadow-[-16px_0_40px_rgba(15,23,42,0.08)] backdrop-blur-sm transition ${
+        className={`fixed inset-y-0 right-0 z-40 w-full max-w-[34rem] border-l border-border/60 bg-white shadow-[-20px_0_60px_rgba(87,54,243,0.06)] transition-transform duration-300 ease-out ${
           selected ? 'translate-x-0' : 'translate-x-full'
         }`}
         aria-hidden={selected ? 'false' : 'true'}
       >
         {selected ? (
           <div className="flex h-full flex-col">
-            <div className="border-b border-border px-5 py-5">
-              <div className="flex items-start justify-between gap-4">
+            {/* Header — subtle purple gradient wash */}
+            <div className="relative border-b border-border/60 px-5 py-5">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#5736F3]/[0.03] via-transparent to-transparent" />
+              <div className="relative flex items-start justify-between gap-4">
                 <div>
                   <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
                     Ticket details
@@ -75,32 +80,44 @@ export function TicketDetailsDrawer({
                   type="button"
                   aria-label="Close ticket details"
                   onClick={onClose}
-                  className="flex h-8 w-8 items-center justify-center rounded-md border border-border text-muted-foreground transition hover:border-primary/30 hover:text-primary"
+                  className="flex h-8 w-8 items-center justify-center rounded-md border border-border/60 text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:bg-primary/5 hover:text-primary"
                 >
                   <CloseIcon />
                 </button>
               </div>
 
-              <div className="mt-5 grid grid-cols-3 gap-2">
-                <StatCell label="Distributed" value={selected.matchday.distributed} />
+              {/* Stat cells */}
+              <div className="relative mt-5 grid grid-cols-3 gap-2">
+                <StatCell label="Distributed" value={selected.matchday.distributed} accent />
                 <StatCell label="Allocated" value={selected.matchday.allocated} />
                 <StatCell label="Pending" value={selected.matchday.pending} />
               </div>
             </div>
 
+            {/* Body */}
             <div className="flex-1 overflow-y-auto px-5 py-5">
-              <div className="rounded-lg border border-border bg-secondary px-4 py-4">
+              {/* Context card */}
+              <div className="rounded-lg border border-border/60 bg-gradient-to-br from-[#fafafc] to-white px-4 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
                 <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
                   Allocation context
                 </div>
-                <div className="mt-2 text-sm font-medium text-foreground">
-                  {selected.sponsor.sponsor.name}
+                <div className="mt-2 flex items-center gap-2">
+                  <div
+                    className="flex h-5 w-5 items-center justify-center rounded text-[9px] font-semibold text-white"
+                    style={{ backgroundColor: selected.sponsor.sponsor.accent }}
+                  >
+                    {selected.sponsor.sponsor.badge}
+                  </div>
+                  <span className="text-sm font-medium text-foreground">
+                    {selected.sponsor.sponsor.name}
+                  </span>
                 </div>
                 <div className="mt-1 text-sm text-muted-foreground">
                   {selected.sponsor.sponsor.tier} · {seasonLabel}
                 </div>
               </div>
 
+              {/* Ticket list header */}
               <div className="mt-6 flex items-center justify-between gap-3">
                 <div>
                   <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
@@ -115,13 +132,15 @@ export function TicketDetailsDrawer({
                 </Badge>
               </div>
 
-              <div className="mt-4 space-y-3">
+              {/* Ticket cards */}
+              <div className="mt-4 space-y-2.5">
                 {entryCount ? (
                   selected.sponsor.detailsByMatchday[selected.matchday.matchId].map(
-                    (detail) => (
+                    (detail, index) => (
                       <div
                         key={detail.ticketId}
-                        className="rounded-lg border border-border bg-white px-4 py-4"
+                        className="rounded-lg border border-border/60 bg-white px-4 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.03)] transition-all duration-200 hover:border-border hover:shadow-[0_2px_8px_rgba(87,54,243,0.06)]"
+                        style={{ animationDelay: `${index * 50}ms` }}
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div>
@@ -137,15 +156,15 @@ export function TicketDetailsDrawer({
                           </Badge>
                         </div>
 
-                        <div className="mt-4 flex items-center justify-between gap-3 text-sm text-muted-foreground">
+                        <div className="mt-3 flex items-center justify-between gap-3 border-t border-border/40 pt-3 text-sm text-muted-foreground">
                           <span>{detail.seatLabel}</span>
-                          <span>{detail.deliveryType}</span>
+                          <span className="text-[11px]">{detail.deliveryType}</span>
                         </div>
                       </div>
                     ),
                   )
                 ) : (
-                  <div className="rounded-lg border border-dashed border-border bg-secondary px-5 py-10 text-center">
+                  <div className="rounded-lg border border-dashed border-border bg-gradient-to-br from-[#fafafc] to-white px-5 py-10 text-center">
                     <p className="text-xl font-semibold tracking-[-0.03em] text-foreground">
                       No seats assigned yet
                     </p>
@@ -163,13 +182,31 @@ export function TicketDetailsDrawer({
   )
 }
 
-function StatCell({ label, value }: { label: string; value: number }) {
+function StatCell({
+  label,
+  value,
+  accent,
+}: {
+  label: string
+  value: number
+  accent?: boolean
+}) {
   return (
-    <div className="rounded-lg border border-border bg-secondary px-3 py-3">
+    <div
+      className={`rounded-lg border px-3 py-3 transition-all duration-200 ${
+        accent
+          ? 'border-primary/12 bg-gradient-to-br from-[#EEEBFE] to-[#f8f7ff] shadow-[0_1px_4px_rgba(87,54,243,0.06)]'
+          : 'border-border/60 bg-gradient-to-br from-[#fafafc] to-white shadow-[0_1px_2px_rgba(0,0,0,0.03)]'
+      }`}
+    >
       <div className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
         {label}
       </div>
-      <div className="mt-1 text-2xl font-semibold tracking-[-0.03em] text-foreground">
+      <div
+        className={`mt-1 text-2xl font-semibold tracking-[-0.03em] ${
+          accent ? 'text-[#5736F3]' : 'text-foreground'
+        }`}
+      >
         {value}
       </div>
     </div>

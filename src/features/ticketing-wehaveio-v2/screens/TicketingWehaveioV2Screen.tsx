@@ -354,7 +354,7 @@ export function TicketingWehaveioV2Screen() {
             </header>
 
             <div className="px-3 py-3 sm:px-4 sm:py-4">
-              <div className="hidden rounded-[10px] border border-border bg-[#fafafc] px-4 py-3 lg:block">
+              <div className="hidden rounded-[10px] border border-border/60 bg-gradient-to-br from-[#fafafc] to-white px-4 py-3 shadow-[0_1px_3px_rgba(0,0,0,0.03)] lg:block">
                 <div
                   data-testid="ticketing-columns-header"
                   className="grid items-center gap-4 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
@@ -435,11 +435,11 @@ export function TicketingWehaveioV2Screen() {
                     )
                   })
                 ) : (
-                  <div className="rounded-[10px] border border-dashed border-[#d6d6db] bg-[#fafafc] px-6 py-16 text-center">
+                  <div className="rounded-[10px] border border-dashed border-border/60 bg-gradient-to-br from-[#fafafc] to-white px-6 py-16 text-center shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
                     <p className="text-2xl font-semibold tracking-[-0.04em] text-foreground">
                       No sponsors match this view
                     </p>
-                    <p className="mx-auto mt-3 max-w-xl text-sm text-[#52525b]">
+                    <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
                       Try widening the search or removing the active filters.
                     </p>
                   </div>
