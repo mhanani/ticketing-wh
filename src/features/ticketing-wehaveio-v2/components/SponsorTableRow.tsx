@@ -5,6 +5,18 @@ import type {
   TicketStatus,
 } from '@/shared/ticketing/types'
 
+const statusTextColor: Record<TicketStatus, string> = {
+  distributed: 'text-[#6132fd]',
+  allocated: 'text-[#0e7490]',
+  pending: 'text-[#52525b]',
+}
+
+const statusBarColor: Record<TicketStatus, string> = {
+  distributed: 'bg-gradient-to-r from-[#6132fd]/40 to-[#6132fd]/60',
+  allocated: 'bg-gradient-to-r from-[#0e7490]/40 to-[#0e7490]/60',
+  pending: '',
+}
+
 export type TicketingColumnKey =
   | 'seasonTotal'
   | 'progress'
@@ -85,15 +97,26 @@ export function SponsorTableRow({
           <div className="flex h-full items-center justify-center">
             <div className="w-full max-w-[220px]">
               <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
-                <span className="text-primary">{progressValue} done</span>
-                <span>{sponsor.seasonTotal - progressValue} left</span>
+                <span className={statusTextColor[metricStatus]}>{progressValue} {metricStatus}</span>
+                <span>{progressPercent}%</span>
               </div>
               <div className="mt-1.5 min-w-0 flex-1">
-                <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-primary/40 to-primary/60 transition-all duration-500 ease-out"
-                    style={{ width: `${progressPercent}%` }}
-                  />
+                <div className="relative h-1.5 overflow-hidden rounded-full bg-secondary">
+                  {metricStatus === 'pending' ? (
+                    <div
+                      className="absolute inset-y-0 left-0 rounded-full transition-all duration-500 ease-out"
+                      style={{
+                        width: `${progressPercent}%`,
+                        backgroundImage: 'repeating-linear-gradient(90deg, #71717a 0px, #71717a 4px, transparent 4px, transparent 8px)',
+                        opacity: 0.45,
+                      }}
+                    />
+                  ) : (
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ease-out ${statusBarColor[metricStatus]}`}
+                      style={{ width: `${progressPercent}%` }}
+                    />
+                  )}
                 </div>
               </div>
             </div>

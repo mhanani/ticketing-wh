@@ -1,10 +1,10 @@
 import { Badge } from '@/components/ui/badge'
-import type { TicketSection } from '@/shared/ticketing/types'
+import type { TicketSection, TicketStatus } from '@/shared/ticketing/types'
 
 interface SectionGroupHeaderProps {
   section: TicketSection
   sponsorCount: number
-  metricLabel: string
+  metricLabel: TicketStatus
   metricTotal: number
   metricCapacity: number
   metricPercent: number
@@ -42,11 +42,22 @@ export function SectionGroupHeader({
           <Badge variant="primary-soft">
             {sponsorCount}
           </Badge>
-          <div className="hidden h-1 w-18 overflow-hidden rounded-full bg-secondary sm:block">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-primary/40 to-primary/60 transition-all duration-500 ease-out"
-              style={{ width: `${metricPercent}%` }}
-            />
+          <div className="relative hidden h-1 w-18 overflow-hidden rounded-full bg-secondary sm:block">
+            {metricLabel === 'pending' ? (
+              <div
+                className="absolute inset-y-0 left-0 rounded-full transition-all duration-500 ease-out"
+                style={{
+                  width: `${metricPercent}%`,
+                  backgroundImage: 'repeating-linear-gradient(90deg, #71717a 0px, #71717a 3px, transparent 3px, transparent 6px)',
+                  opacity: 0.4,
+                }}
+              />
+            ) : (
+              <div
+                className={`h-full rounded-full transition-all duration-500 ease-out ${metricLabel === 'allocated' ? 'bg-gradient-to-r from-[#0e7490]/40 to-[#0e7490]/60' : 'bg-gradient-to-r from-[#6132fd]/40 to-[#6132fd]/60'}`}
+                style={{ width: `${metricPercent}%` }}
+              />
+            )}
           </div>
         </div>
       </div>
