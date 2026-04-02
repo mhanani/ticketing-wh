@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge'
 import type {
   SponsorAllocation,
   TicketSection,
@@ -65,17 +66,17 @@ export function SponsorTableRow({
             {sponsor.sponsor.badge}
           </div>
           <div className="min-w-0">
-            <div className="truncate text-sm font-medium text-[var(--wehave-v2-ink)]">
+            <div className="truncate text-sm font-medium text-foreground">
               {sponsor.sponsor.name}
             </div>
-            <div className="mt-0.5 text-[11px] text-[var(--wehave-v2-muted)]">
+            <div className="mt-0.5 text-[11px] text-muted-foreground">
               {sponsor.sponsor.tier}
             </div>
           </div>
         </div>
 
         {visibleColumns.includes('seasonTotal') ? (
-          <div className="flex h-full items-center justify-center text-center text-sm font-medium text-[var(--wehave-v2-ink)]">
+          <div className="flex h-full items-center justify-center text-center text-sm font-medium text-foreground">
             {sponsor.seasonTotal}
           </div>
         ) : null}
@@ -83,14 +84,14 @@ export function SponsorTableRow({
         {visibleColumns.includes('progress') ? (
           <div className="flex h-full items-center justify-center">
             <div className="w-full max-w-[220px]">
-              <div className="flex items-center justify-between gap-2 text-[11px] text-[var(--wehave-v2-muted)]">
-                <span className="text-[#826AF6]">{progressValue} done</span>
+              <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+                <span className="text-primary">{progressValue} done</span>
                 <span>{sponsor.seasonTotal - progressValue} left</span>
               </div>
               <div className="mt-1.5 min-w-0 flex-1">
-                <div className="h-1 overflow-hidden rounded-full bg-[var(--wehave-v2-surface-muted)]">
+                <div className="h-1 overflow-hidden rounded-full bg-secondary">
                   <div
-                    className="h-full rounded-full bg-[var(--wehave-v2-ring)]"
+                    className="h-full rounded-full bg-primary/50"
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
@@ -109,17 +110,17 @@ export function SponsorTableRow({
                   onOpenDetails(section.id, sponsor.sponsor.id, matchday.matchId)
                 }
                 aria-label={`${sponsor.sponsor.name} ${matchday.opponent} details`}
-                className="rounded-md border border-[var(--wehave-v2-border)] bg-[var(--wehave-v2-surface-soft)] px-2.5 py-2 text-left transition hover:border-[var(--wehave-v2-primary-border)] hover:bg-white"
+                className="rounded-md border border-border bg-secondary px-2.5 py-2 text-left transition hover:border-primary/30 hover:bg-white"
               >
-                <div className="truncate text-[11px] font-medium text-[var(--wehave-v2-ink-soft)]">
+                <div className="truncate text-[11px] font-medium text-muted-foreground">
                   {matchday.date}
                 </div>
-                <div className="mt-1 truncate text-[13px] font-medium text-[var(--wehave-v2-ink)]">
+                <div className="mt-1 truncate text-[13px] font-medium text-foreground">
                   {matchday.opponent}
                 </div>
-                <div className="mt-2 inline-flex rounded-md border border-[var(--wehave-v2-primary-border)] bg-[var(--wehave-v2-primary-soft)] px-2 py-0.5 text-xs font-medium text-[var(--wehave-v2-primary-text)]">
+                <Badge variant="primary-soft" className="mt-2">
                   {matchday[metricStatus]}
-                </div>
+                </Badge>
               </button>
             ))}
           </div>
@@ -128,7 +129,7 @@ export function SponsorTableRow({
         <div className="flex h-full items-center justify-center">
           <button
             type="button"
-            className="flex h-8 w-8 items-center justify-center rounded-md border border-[var(--wehave-v2-border)] text-[var(--wehave-v2-muted)] transition hover:border-[var(--wehave-v2-primary-border)] hover:text-[var(--wehave-v2-primary)]"
+            className="flex h-8 w-8 items-center justify-center rounded-md border border-border text-muted-foreground transition hover:border-primary/30 hover:text-primary"
             onClick={() =>
               onOpenDetails(
                 section.id,
@@ -153,25 +154,25 @@ export function SponsorTableRow({
               {sponsor.sponsor.badge}
             </div>
             <div className="min-w-0">
-              <div className="truncate text-sm font-medium text-[var(--wehave-v2-ink)]">
+              <div className="truncate text-sm font-medium text-foreground">
                 {sponsor.sponsor.name}
               </div>
-              <div className="mt-0.5 text-[11px] text-[var(--wehave-v2-muted)]">
+              <div className="mt-0.5 text-[11px] text-muted-foreground">
                 {section.label}
               </div>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-sm font-medium text-[var(--wehave-v2-ink)]">
+            <div className="text-sm font-medium text-foreground">
               {sponsor.seasonTotal}
             </div>
-            <div className="text-[11px] text-[var(--wehave-v2-muted)]">season</div>
+            <div className="text-[11px] text-muted-foreground">season</div>
           </div>
         </div>
 
-        <div className="mt-3 h-1 overflow-hidden rounded-full bg-[var(--wehave-v2-surface-muted)]">
+        <div className="mt-3 h-1 overflow-hidden rounded-full bg-secondary">
           <div
-            className="h-full rounded-full bg-[var(--wehave-v2-ring)]"
+            className="h-full rounded-full bg-primary/50"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
@@ -185,20 +186,20 @@ export function SponsorTableRow({
                 onOpenDetails(section.id, sponsor.sponsor.id, matchday.matchId)
               }
               aria-label={`${sponsor.sponsor.name} ${matchday.opponent} details`}
-              className="rounded-md border border-[var(--wehave-v2-border)] bg-[var(--wehave-v2-surface-soft)] px-3 py-3 text-left"
+              className="rounded-md border border-border bg-secondary px-3 py-3 text-left"
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="truncate text-[13px] font-medium text-[var(--wehave-v2-ink)]">
+                  <div className="truncate text-[13px] font-medium text-foreground">
                     {matchday.opponent}
                   </div>
-                  <div className="mt-0.5 text-[11px] text-[var(--wehave-v2-muted)]">
+                  <div className="mt-0.5 text-[11px] text-muted-foreground">
                     {matchday.date}
                   </div>
                 </div>
-                <div className="rounded-md border border-[var(--wehave-v2-primary-border)] bg-[var(--wehave-v2-primary-soft)] px-2 py-1 text-xs font-medium text-[var(--wehave-v2-primary-text)]">
+                <Badge variant="primary-soft" className="px-2 py-1">
                   {matchday[metricStatus]}
-                </div>
+                </Badge>
               </div>
             </button>
           ))}

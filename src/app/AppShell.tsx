@@ -82,7 +82,7 @@ export function AppShell() {
   return (
     <div className="min-h-screen bg-[#f9f9fa] text-[#52525b]">
       <div className="flex min-h-screen">
-        <aside className="hidden w-64 shrink-0 border-r border-[#e4e4e7] bg-[#f9f9fa] [font-family:var(--font-geist-sans)] lg:flex lg:flex-col">
+        <aside className="hidden w-64 shrink-0 border-r border-[#e4e4e7] bg-[#f9f9fa] lg:flex lg:flex-col">
           <div className="px-4 py-4">
             <div className="flex items-center gap-3">
               <div className="flex h-7 w-7 items-center justify-center rounded-[8px] bg-[#7F22FE] text-white">
@@ -119,7 +119,7 @@ export function AppShell() {
                             ? 'cursor-not-allowed text-[#a1a1aa] opacity-60'
                             : isActive
                               ? 'bg-[#f4f4f5] font-medium text-[#09090b]'
-                              : 'text-[#27272a] hover:bg-[#f4f4f5]'
+                              : 'font-normal text-[#27272a] hover:bg-[#f4f4f5]'
                         }`
                       }
                     >
@@ -156,7 +156,7 @@ export function AppShell() {
                 <div className="flex h-8 w-8 items-center justify-center rounded-[8px] border border-[#e4e4e7] bg-[#fafafa] text-[#71717b] lg:hidden">
                   <NavIcon name="planning" />
                 </div>
-                <h1 className="truncate text-3xl font-bold text-[#18181b] [font-family:var(--font-geist-sans)]">
+                <h1 className="truncate text-3xl font-bold text-[#18181b]">
                   {currentTitle}
                 </h1>
               </div>

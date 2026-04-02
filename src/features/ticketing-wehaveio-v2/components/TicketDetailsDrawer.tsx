@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 
+import { Badge } from '@/components/ui/badge'
 import type { TicketStatus, TicketSection } from '@/shared/ticketing/types'
 import { getSelectedTicketSlice } from '@/shared/ticketing/utils'
 import { seasonLabel } from '@/mocks/ticketing'
@@ -14,13 +15,10 @@ interface TicketDetailsDrawerProps {
   onClose: () => void
 }
 
-const badgeTone: Record<TicketStatus, string> = {
-  distributed:
-    'border-[rgba(80,32,229,0.18)] bg-[rgba(80,32,229,0.08)] text-[rgba(80,32,229,0.92)]',
-  allocated:
-    'border-[rgba(14,116,144,0.18)] bg-[rgba(14,116,144,0.08)] text-[#0f766e]',
-  pending:
-    'border-[rgba(113,113,122,0.18)] bg-[rgba(113,113,122,0.08)] text-[#52525b]',
+const statusVariant: Record<TicketStatus, 'distributed' | 'allocated' | 'pending'> = {
+  distributed: 'distributed',
+  allocated: 'allocated',
+  pending: 'pending',
 }
 
 export function TicketDetailsDrawer({
@@ -45,30 +43,30 @@ export function TicketDetailsDrawer({
   return (
     <>
       <div
-        className={`fixed inset-0 z-30 bg-[rgba(9,9,11,0.12)] transition ${
+        className={`fixed inset-0 z-30 bg-[#09090b]/12 transition ${
           selected ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         }`}
         aria-hidden="true"
         onClick={onClose}
       />
       <aside
-        className={`fixed inset-y-0 right-0 z-40 w-full max-w-[34rem] border-l border-[var(--wehave-v2-border)] bg-[rgba(255,255,255,0.98)] shadow-[-16px_0_40px_rgba(15,23,42,0.08)] backdrop-blur-sm transition ${
+        className={`fixed inset-y-0 right-0 z-40 w-full max-w-[34rem] border-l border-border bg-white/98 shadow-[-16px_0_40px_rgba(15,23,42,0.08)] backdrop-blur-sm transition ${
           selected ? 'translate-x-0' : 'translate-x-full'
         }`}
         aria-hidden={selected ? 'false' : 'true'}
       >
         {selected ? (
           <div className="flex h-full flex-col">
-            <div className="border-b border-[var(--wehave-v2-border)] px-5 py-5">
+            <div className="border-b border-border px-5 py-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--wehave-v2-muted)]">
+                  <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
                     Ticket details
                   </div>
-                  <h2 className="mt-2 text-[28px] font-semibold tracking-[-0.04em] text-[var(--wehave-v2-ink)]">
+                  <h2 className="mt-2 text-[28px] font-semibold tracking-[-0.04em] text-foreground">
                     {selected.matchday.date}
                   </h2>
-                  <p className="mt-1 text-sm text-[var(--wehave-v2-ink-soft)]">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     {selected.matchday.opponent} · {selected.section.label}
                   </p>
                 </div>
@@ -77,7 +75,7 @@ export function TicketDetailsDrawer({
                   type="button"
                   aria-label="Close ticket details"
                   onClick={onClose}
-                  className="flex h-8 w-8 items-center justify-center rounded-md border border-[var(--wehave-v2-border)] text-[var(--wehave-v2-muted)] transition hover:border-[var(--wehave-v2-primary-border)] hover:text-[var(--wehave-v2-primary)]"
+                  className="flex h-8 w-8 items-center justify-center rounded-md border border-border text-muted-foreground transition hover:border-primary/30 hover:text-primary"
                 >
                   <CloseIcon />
                 </button>
@@ -91,30 +89,30 @@ export function TicketDetailsDrawer({
             </div>
 
             <div className="flex-1 overflow-y-auto px-5 py-5">
-              <div className="rounded-[var(--wehave-v2-radius)] border border-[var(--wehave-v2-border)] bg-[var(--wehave-v2-surface-soft)] px-4 py-4">
-                <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--wehave-v2-muted)]">
+              <div className="rounded-lg border border-border bg-secondary px-4 py-4">
+                <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
                   Allocation context
                 </div>
-                <div className="mt-2 text-sm font-medium text-[var(--wehave-v2-ink)]">
+                <div className="mt-2 text-sm font-medium text-foreground">
                   {selected.sponsor.sponsor.name}
                 </div>
-                <div className="mt-1 text-sm text-[var(--wehave-v2-ink-soft)]">
+                <div className="mt-1 text-sm text-muted-foreground">
                   {selected.sponsor.sponsor.tier} · {seasonLabel}
                 </div>
               </div>
 
               <div className="mt-6 flex items-center justify-between gap-3">
                 <div>
-                  <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--wehave-v2-muted)]">
+                  <div className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
                     Ticket list
                   </div>
-                  <p className="mt-1 text-sm text-[var(--wehave-v2-ink-soft)]">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     Assigned and reserved seats for the selected matchday.
                   </p>
                 </div>
-                <div className="rounded-md border border-[var(--wehave-v2-primary-border)] bg-[var(--wehave-v2-primary-soft)] px-2 py-1 text-xs font-medium text-[var(--wehave-v2-primary-text)]">
+                <Badge variant="primary-soft" className="px-2 py-1">
                   {entryCount} entries
-                </div>
+                </Badge>
               </div>
 
               <div className="mt-4 space-y-3">
@@ -123,25 +121,23 @@ export function TicketDetailsDrawer({
                     (detail) => (
                       <div
                         key={detail.ticketId}
-                        className="rounded-[var(--wehave-v2-radius)] border border-[var(--wehave-v2-border)] bg-white px-4 py-4"
+                        className="rounded-lg border border-border bg-white px-4 py-4"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div>
-                            <h3 className="text-sm font-medium text-[var(--wehave-v2-ink)]">
+                            <h3 className="text-sm font-medium text-foreground">
                               {detail.holderName}
                             </h3>
-                            <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-[var(--wehave-v2-muted)]">
+                            <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
                               {detail.ticketId}
                             </p>
                           </div>
-                          <span
-                            className={`rounded-md border px-2 py-1 text-xs font-medium ${badgeTone[detail.status]}`}
-                          >
-                            {capitalizeLabel(detail.status)}
-                          </span>
+                          <Badge variant={statusVariant[detail.status]} className="px-2 py-1">
+                            {detail.status.charAt(0).toUpperCase() + detail.status.slice(1)}
+                          </Badge>
                         </div>
 
-                        <div className="mt-4 flex items-center justify-between gap-3 text-sm text-[var(--wehave-v2-ink-soft)]">
+                        <div className="mt-4 flex items-center justify-between gap-3 text-sm text-muted-foreground">
                           <span>{detail.seatLabel}</span>
                           <span>{detail.deliveryType}</span>
                         </div>
@@ -149,11 +145,11 @@ export function TicketDetailsDrawer({
                     ),
                   )
                 ) : (
-                  <div className="rounded-[var(--wehave-v2-radius)] border border-dashed border-[var(--wehave-v2-border-strong)] bg-[var(--wehave-v2-surface-soft)] px-5 py-10 text-center">
-                    <p className="text-xl font-semibold tracking-[-0.03em] text-[var(--wehave-v2-ink)]">
+                  <div className="rounded-lg border border-dashed border-border bg-secondary px-5 py-10 text-center">
+                    <p className="text-xl font-semibold tracking-[-0.03em] text-foreground">
                       No seats assigned yet
                     </p>
-                    <p className="mt-2 text-sm text-[var(--wehave-v2-ink-soft)]">
+                    <p className="mt-2 text-sm text-muted-foreground">
                       This sponsor still has open capacity for the selected matchday.
                     </p>
                   </div>
@@ -169,19 +165,15 @@ export function TicketDetailsDrawer({
 
 function StatCell({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-[var(--wehave-v2-radius)] border border-[var(--wehave-v2-border)] bg-[var(--wehave-v2-surface-soft)] px-3 py-3">
-      <div className="text-[11px] font-medium uppercase tracking-[0.16em] text-[var(--wehave-v2-muted)]">
+    <div className="rounded-lg border border-border bg-secondary px-3 py-3">
+      <div className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
         {label}
       </div>
-      <div className="mt-1 text-2xl font-semibold tracking-[-0.03em] text-[var(--wehave-v2-ink)]">
+      <div className="mt-1 text-2xl font-semibold tracking-[-0.03em] text-foreground">
         {value}
       </div>
     </div>
   )
-}
-
-function capitalizeLabel(value: string) {
-  return value.charAt(0).toUpperCase() + value.slice(1)
 }
 
 function CloseIcon() {
